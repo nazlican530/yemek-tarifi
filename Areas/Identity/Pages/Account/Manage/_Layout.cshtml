@@ -1,0 +1,30 @@
+﻿@using YemekTarifiWeb.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    // Eğer bir üst layout tanımlandıysa onu kullan, yoksa Identity layout'a düş
+    Layout = ViewData["ParentLayout"]?.ToString() ?? "/Areas/Identity/Pages/_Layout.cshtml";
+}
+
+<h1 class="mb-4">Hesabınızı Yönetin</h1>
+
+<div>
+    <h2 class="h5">Hesap Ayarlarınızı Değiştirin</h2>
+    <hr />
+    <div class="row">
+        <!-- Sol navigasyon menüsü -->
+        <div class="col-md-3">
+            <partial name="_ManageNav" />
+        </div>
+
+        <!-- İçerik -->
+        <div class="col-md-9">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

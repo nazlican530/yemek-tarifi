@@ -1,0 +1,54 @@
+@using System.Security.Claims
+@model IEnumerable<YemekTarifiWeb.Models.Recipe>
+
+@{
+    ViewData["Title"] = "All Recipes";
+    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var selected = ViewBag.SelectedCategory as string;
+}
+
+<h2>All Recipes</h2>
+
+<div class="mb-3">
+    <a asp-action="Index" asp-route-category="" class="btn btn-outline-primary @(string.IsNullOrEmpty(selected) ? "active" : "")">All</a>
+    <a asp-action="Index" asp-route-category="Main Dish" class="btn btn-outline-primary @(selected == "Main Dish" ? "active" : "")">Main Dishes</a>
+    <a asp-action="Index" asp-route-category="Dessert" class="btn btn-outline-primary @(selected == "Dessert" ? "active" : "")">Desserts</a>
+    <a asp-action="Index" asp-route-category="Soup" class="btn btn-outline-primary @(selected == "Soup" ? "active" : "")">Soups</a>
+</div>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                @if (!string.IsNullOrEmpty(item.ImagePath))
+                {
+                    <img src="@item.ImagePath" class="card-img-top" alt="@item.Title" style="max-height: 200px; object-fit: cover;" />
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@item.Title</h5>
+                    <p class="card-text">
+                        <strong>Category:</strong> @item.Category <br />
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary mt-2">View Details</a>
+                    </p>
+
+                    @* Sadece tarif sahibi görür: Sadece Delete butonu kalacak *@
+                    @if (item.UserId == currentUserId)
+                    {
+                        <div class="mt-2">
+                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this recipe?');">Delete</button>
+                            </form>
+                        </div>
+                    }
+                </div>
+                @if (item.User != null)
+                {
+                    <div class="card-footer text-muted text-end">
+                        Shared by: <strong>@item.User.UserName</strong>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
